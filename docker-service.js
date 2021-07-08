@@ -59,6 +59,10 @@ async function updateService(service) {
       ...service.Spec,
       TaskTemplate: {
         ...service.Spec.TaskTemplate,
+        ContainerSpec: {
+          ...service.Spec.TaskTemplate.ContainerSpec,
+          Image: service.Spec.TaskTemplate.ContainerSpec.Image.split('@')[0],
+        },
         ForceUpdate: service.Spec.TaskTemplate.ForceUpdate + 1,
       }
     }
