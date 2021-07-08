@@ -5,7 +5,6 @@ const http = require('http');
  */
 async function requestDockerApi(opt, data) {
   const body = data ? JSON.stringify(data) : null;
-  console.log(body);
   return new Promise(function(resolve, reject){
     const options = {
       socketPath: '/var/run/docker.sock',
@@ -71,7 +70,9 @@ async function updateService(service) {
  */
 async function executeServiceUpdate(data) {
   const services = await getServices();
-  const servicesShouldUpdate = services.filter(s => data.event_data.resources.some(r => r.resource_url === s.Spec.TaskTemplate.ContainerSpec.Image));
+  const servicesShouldUpdate = services.filter(s => data.event_data.resources.some(r => s.Spec.TaskTemplate.ContainerSpec.Image.startsWith(r.resource_url) ));
+
+  console.log(`There are ${servicesShouldUpdate.length}/${services.length} services will update.`);
   for (const service of servicesShouldUpdate) {
     try {
       console.log(`update service ${service.Spec.Name}`);
